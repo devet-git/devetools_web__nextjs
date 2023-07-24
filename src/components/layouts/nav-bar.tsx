@@ -14,10 +14,10 @@ export default function NavBar() {
 	const pathname = usePathname()
 
 	return (
-		<nav className="bg-opacity-50 backdrop-blur-sm sticky top-0 z-50 px-10 py-3	flex flex-row gap-5 items-center ">
+		<nav className="bg-opacity-50 backdrop-blur-md sticky top-0 z-50 px-10 py-3	flex flex-row gap-5 items-center ">
 			<div className='logo font-bold text-2xl'>
 				<Link href={"/"}>
-					DeveTools
+					Devetools
 				</Link>
 			</div>
 

@@ -1,7 +1,19 @@
 'use client';
 
-import InfiniteLoadingEffect from "@/components/loading/infinite";
+import Alert from "@/components/alert";
+import ImageUploader from "@/components/image-uploader";
 import { Metadata } from "next"
+import FBAccount from "./fb-account";
+import { useEffect, useRef, useState } from "react";
+import classNames from "@/utils/class-names";
+import IconButton from "@/components/buttons/icon-button";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import InfiniteLoadingEffect from "@/components/loading/infinite";
+interface IAccount {
+	name: string,
+	username: string,
+	avatarLink?: string
+}
 
 export const metadata: Metadata = {
 	title: 'DeveTools - Find facebook account',
@@ -9,9 +21,87 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
+	const [image, setImage] = useState<File>();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [accounts, setAccounts] = useState<IAccount[]>([]);
+	const resultSectionRef = useRef<HTMLParagraphElement>(null)
+
+	const scrollToResultSection = () => {
+		if (resultSectionRef.current && window.innerWidth < 768)
+			resultSectionRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+	}
+	const handleFind = () => {
+		setIsLoading(prev => !prev);
+		setTimeout(() => {
+			setAccounts([
+				{ name: "thang", username: "thang" + Math.random().toFixed(3) },
+				{ name: "haong", username: "haong" + Math.random().toFixed(3) },
+				{ name: "hieu", username: "heiu" + Math.random().toFixed(3) },
+				{ name: "hau", username: "hau" + Math.random().toFixed(3) },
+				{ name: "vu", username: "vu" + Math.random().toFixed(3) },
+			])
+			setIsLoading(false)
+			scrollToResultSection()
+		}, 2500);
+
+	}
+	useEffect(() => {
+		setIsLoading(false)
+	}, [image])
+
+
 	return (
-		<>
-			<h1>Find facebook</h1>
-		</>
+		<main className="my-2" >
+			<div className="flex lg:flex-row flex-col justify-between items-start gap-3">
+				<section className="flex-shrink-0 lg:w-[40%] w-full lg:sticky top-16">
+					<Alert.Info className="w-full text-center">
+						<div className="w-full flex flex-col sm:flex-row justify-between items-center">
+							<span>
+								Ảnh rõ nét sẽ giúp tìm kiếm nhanh hơn.
+							</span>
+							<IconButton
+								icon={<MagnifyingGlassIcon className="w-6" />}
+								text="Tìm kiếm"
+								className={classNames(
+									!image && "hidden",
+									isLoading ? "bg-gray-200" : "bg-blue-50 hover:bg-blue-100",
+									" rounded-md text-black px-2.5 py-2 border-2 border-blue-100 flex-shrink-0"
+								)}
+								onClick={handleFind}
+								disable={isLoading}
+							/>
+						</div>
+					</Alert.Info>
+					<ImageUploader
+						className="mb-2"
+						onLoaded={(image) => setImage(image)}
+						hiddenUploadButton
+					/>
+
+					<Alert.Warning className="hidden sm:flex">
+						Kết quả tìm kiếm có thể sẽ không chính xác.
+						Mong các bạn kiểm tra kỹ để tránh các nhầm lẫn không đáng có😎
+					</Alert.Warning>
+				</section>
+				<section
+					ref={resultSectionRef}
+					className={classNames(
+						"flex w-full flex-col gap-2 bg-slate-100 px-5 py-3.5 rounded-md"
+					)}
+				>
+					<p className="text-blue-500">Kết quả tìm kiếm</p>
+					{isLoading ? <InfiniteLoadingEffect /> :
+						accounts.length > 0 && accounts.map(acc => (
+							<FBAccount
+								key={acc.username}
+								name={acc.name}
+								username={acc.username}
+								avatarLink={acc.avatarLink}
+							/>
+						))
+					}
+				</section>
+			</div>
+		</main>
 	)
 }

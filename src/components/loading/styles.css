@@ -1,10 +1,13 @@
 .wave {
-  width: 5px;
-  height: 50px;
-  background: linear-gradient(45deg, black, #f58038);
+  width: 4px;
+  height: 33px;
+  background: linear-gradient(60deg,  #5eeff9,#4a98e7);
   margin: 10px;
   animation: wave 0.5s linear infinite;
   border-radius: 20px;
+}
+@media (width < 400px) {
+	.wave{margin: 2px;}
 }
 .wave:nth-child(2) {
   animation-delay: 0.7s;
